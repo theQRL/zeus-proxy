@@ -3,12 +3,30 @@
 </head>
 
 <body>
-  <h1>Welcome to zeus-proxy</h1>
-  <h6>A service provided by the QRL Foundation</h6>
-  {{> info}}
+  <div class="container">
+    <div class="notification is-primary">
+      <h1 class="title is-1">zeus-proxy</h1>
+      <h5 class="subtitle is-5">A service provided by the QRL Foundation</h5>
+    </div>
+    {{> get}}
+    {{> post}}
+  </div>
 </body>
 
-<template name="info">
-  <p>Please refer to the documentation for correct use</p>
+<template name="get">
+  <div class="box">
+    <h3 class="title is-3 mb-1">GET</h3>
+    <div class="mt-2 mb-5 is-divider"></div>
+    <p class="title is-5 mb-3">GetStats</p>
+    <p>Description of this call</p>
+  </div>
 </template>
 
+<template name="post">
+  <div class="box">
+    <h3 class="title is-3 mb-1">POST</h3>
+    <div class="mt-2 mb-5 is-divider"></div>
+    <p class="title is-5 mb-3">XXX</p>
+    <p>Description of this call</p>
+  </div>
+</template>
