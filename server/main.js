@@ -10,25 +10,22 @@ Meteor.startup(() => {
     // Routes - get
     JsonRoutes.add("get", "/grpc/:request", function (req, res, next) {
       const id = req.params.request;
-      if (id === 'GetStats') {
-        testnet.api('GetStats').then((result) => {
-          console.log(result)
-          JsonRoutes.sendResult(res, {
-            data: result,
-          });  
-        })        
-      } else {
-      JsonRoutes.sendResult(res, {
-        data: `Here will be data back from ${id} request GET`
-      });  
-      }
+       testnet.api(id).then((result) => {
+         JsonRoutes.sendResult(res, {
+           data: result,
+         });  
+       });        
     });
     // Routes - post
     JsonRoutes.add("post", "/grpc/:request", function (req, res, next) {
       const id = req.params.request;
-      JsonRoutes.sendResult(res, {
-        data: `Here will be data back from ${id} request POST`
-      });
-    });
+      const options = req.body;
+      console.log(options);
+       testnet.api(id, options).then((result) => {
+         JsonRoutes.sendResult(res, {
+           data: result,
+         });  
+       });
+     });
   });
 });
