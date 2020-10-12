@@ -45,6 +45,12 @@ Template.post.events({
     )
     .then(data => displayData(data))
   },
+  'click #GetObject-Testnet': () => {
+    postData('/grpc/GetObject', 
+      JSON.parse($('#GetObject').val())
+    )
+    .then(data => displayData(data))
+  },
 })
 
 Template.modal.events({
