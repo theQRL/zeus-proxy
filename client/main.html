@@ -18,7 +18,7 @@
   <div class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
-      <div id="outputJson">
+      <div id="outputJson" style="background: #EEE;">
       </div>
     </div>
     <button class="modal-close is-large" aria-label="close"></button>
@@ -33,9 +33,11 @@
       <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetStats</p></div></div>
       <div class="level-right">
         <div class="level-item">
+          <a href="/grpc/GetStats">
           <button class="button is-small is-primary is-light level-item">
             Testnet
           </button>
+          </a>
           <button disabled class="button is-small is-primary is-light level-item">
             Mainnet
           </button>
@@ -54,7 +56,7 @@
       <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetStats</p></div></div>
       <div class="level-right">
         <div class="level-item">
-          <button class="button is-small is-primary is-light level-item">
+          <button id="GetStats-Testnet" class="button is-small is-primary is-light level-item">
             Testnet
           </button>
           <button disabled class="button is-small is-primary is-light level-item">
@@ -63,6 +65,7 @@
         </div>
       </div>
     </div>
+    <textarea id="GetStats" class="textarea" placeholder="{ include_timeseries: Boolean }">{ "include_timeseries": false }</textarea>
     <p><strong>Sends:</strong> Boolean flag for recent block data</p>
     <p><strong>Returns:</strong> Network statistics with/without recent block data</p>
     <p>&nbsp;</p>
@@ -84,7 +87,7 @@
     <p><strong>Returns:</strong> Address state</p>
     <p>&nbsp;</p>
     <div class="level is-mobile">
-      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetAddressState</p></div></div>
+      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetOptimizedAddressState</p></div></div>
       <div class="level-right">
         <div class="level-item">
           <button id="GetOptimizedAddressState-Testnet" class="button is-small is-primary is-light level-item">

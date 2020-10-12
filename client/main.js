@@ -18,28 +18,32 @@ async function postData(url = '', data = {}) {
   return response.json()
 }
 
+function displayData(data) {
+  console.log(data)
+  const formatter = new JSONFormatter(data, 2)
+  $('#outputJson').html(formatter.render())
+  $('html').addClass('is-clipped')
+  $('.modal').addClass('is-active')
+}
+
 Template.post.events({
+  'click #GetStats-Testnet': () => {
+    postData('/grpc/GetStats',
+      JSON.parse($('#GetStats').val())
+    )
+    .then(data => displayData(data))
+  },
   'click #GetAddressState-Testnet': () => {
     postData('/grpc/GetAddressState',
       JSON.parse($('#GetAddressState').val())
     )
-    .then(data => {
-      console.log(data)
-      $('#outputJson').html(JSON.stringify(data))
-      $('html').addClass('is-clipped')
-      $('.modal').addClass('is-active')
-    })
+    .then(data => displayData(data))
   },
   'click #GetOptimizedAddressState-Testnet': () => {
     postData('/grpc/GetOptimizedAddressState', 
       JSON.parse($('#GetOptimizedAddressState').val())
     )
-    .then(data => {
-      console.log(data)
-      $('#outputJson').html(JSON.stringify(data))
-      $('html').addClass('is-clipped')
-      $('.modal').addClass('is-active')
-    })
+    .then(data => displayData(data))
   },
 })
 
