@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import QrlNode from '@theqrl/node-helpers';
 
-const ip = 'testnet-2.automated.theqrl.org'
+const ip = 'testnet-1.automated.theqrl.org'
 const port = '19009'
 const testnet = new QrlNode(ip, port)
 
@@ -22,11 +22,23 @@ Meteor.startup(() => {
     JsonRoutes.add("post", "/grpc/:request", function (req, res, next) {
       const id = req.params.request;
       const options = req.body;
-      console.log(options);
+      console.table(options);
+
+      try {
+        options.address = Buffer.from(options.address.substring(1), 'hex')
+      } catch (e) {
+        //
+      }
+
       testnet.api(id, options).then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
         });  
+      }).catch(error => {
+        console.log('ERROR', error)
+        JsonRoutes.sendResult(res, {
+          data: error,
+        });
       });
     });
   });

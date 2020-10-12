@@ -12,6 +12,7 @@
     "@theqrl/node-helpers": "^0.5.4",
     "@theqrl/qrlbase.proto": "^1.0.0",
     "jquery": "^3.4.1",
+    "json-formatter-js": "^2.3.4",
     "meteor-node-stubs": "^1.0.0",
     "qrlbase.proto": "^1.0.0"
   },
