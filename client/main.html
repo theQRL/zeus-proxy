@@ -11,14 +11,38 @@
     {{> get}}
     {{> post}}
   </div>
+  {{ > modal}}
 </body>
+
+<template name="modal">
+  <div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div id="outputJson">
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+</template>
 
 <template name="get">
   <div class="box">
     <h3 class="title is-3 mb-1">GET</h3>
     <div class="mt-2 mb-5 is-divider"></div>
-    <p class="title is-5 mb-3">GetStats</p>
-    <p>Description of this call</p>
+    <div class="level is-mobile">
+      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetStats</p></div></div>
+      <div class="level-right">
+        <div class="level-item">
+          <button class="button is-small is-primary is-light level-item">
+            Testnet
+          </button>
+          <button disabled class="button is-small is-primary is-light level-item">
+            Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <p><strong>Returns:</strong> Network statistics</p>
   </div>
 </template>
 
@@ -26,7 +50,54 @@
   <div class="box">
     <h3 class="title is-3 mb-1">POST</h3>
     <div class="mt-2 mb-5 is-divider"></div>
-    <p class="title is-5 mb-3">XXX</p>
-    <p>Description of this call</p>
+    <div class="level is-mobile">
+      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetStats</p></div></div>
+      <div class="level-right">
+        <div class="level-item">
+          <button class="button is-small is-primary is-light level-item">
+            Testnet
+          </button>
+          <button disabled class="button is-small is-primary is-light level-item">
+            Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <p><strong>Sends:</strong> Boolean flag for recent block data</p>
+    <p><strong>Returns:</strong> Network statistics with/without recent block data</p>
+    <p>&nbsp;</p>
+    <div class="level is-mobile">
+      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetAddressState</p></div></div>
+      <div class="level-right">
+        <div class="level-item">
+          <button id="GetAddressState-Testnet" class="button is-small is-primary is-light level-item">
+            Testnet
+          </button>
+          <button disabled class="button is-small is-primary is-light level-item">
+            Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <textarea id="GetAddressState" class="textarea" placeholder="{ address: String }">{ "address": "Q0103003a218992254da652d64e3617f5ed2cf6417bf464e2a02d0a214e0050657f46f9f6796f73" }</textarea>
+    <p><strong>Sends:</strong> String QRL Address</p>
+    <p><strong>Returns:</strong> Address state</p>
+    <p>&nbsp;</p>
+    <div class="level is-mobile">
+      <div class="level-left"><div class="level-item"><p class="title is-5 mb-3">GetAddressState</p></div></div>
+      <div class="level-right">
+        <div class="level-item">
+          <button id="GetOptimizedAddressState-Testnet" class="button is-small is-primary is-light level-item">
+            Testnet
+          </button>
+          <button disabled class="button is-small is-primary is-light level-item">
+            Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <textarea id="GetOptimizedAddressState" class="textarea" placeholder="{ address: String }">{ "address": "Q0103003a218992254da652d64e3617f5ed2cf6417bf464e2a02d0a214e0050657f46f9f6796f73" }</textarea>
+    <p><strong>Sends:</strong> String QRL Address</p>
+    <p><strong>Returns:</strong> Optimized address state</p>
   </div>
 </template>
