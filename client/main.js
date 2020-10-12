@@ -2,6 +2,21 @@ global.Buffer = global.Buffer || require("buffer").Buffer
 import JSONFormatter from 'json-formatter-js'
 import './main.html'
 
+async function getData(url = '') {
+  const response = await fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+  })
+  return response.json()
+}
+
 async function postData(url = '', data = {}) {
   const response = await fetch(url, {
     method: 'POST',
@@ -25,6 +40,13 @@ function displayData(data) {
   $('html').addClass('is-clipped')
   $('.modal').addClass('is-active')
 }
+
+Template.get.events({
+  'click #GetStats-get-Testnet': () => {
+    getData('/grpc/GetStats')
+    .then(data => displayData(data))
+  },
+})
 
 Template.post.events({
   'click #GetStats-Testnet': () => {
@@ -54,7 +76,8 @@ Template.post.events({
 })
 
 Template.modal.events({
-  'click .modal-close': () => {
+  'click .mc': () => {
     $('.modal').removeClass('is-active')
+    $('html').removeClass('is-clipped')
   }
 })
