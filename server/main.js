@@ -10,6 +10,14 @@ const mainnet = new QrlNode(ip_mainnet, port)
 Meteor.startup(() => {
 
   // Enable cross origin requests for all endpoints
+
+  // Preflight
+  WebApp.rawConnectHandlers.use(function(req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization,Content-Type");
+    return next();
+  });
+
   const headers = {
     'Cache-Control': 'no-store',
     Pragma: 'no-cache',
