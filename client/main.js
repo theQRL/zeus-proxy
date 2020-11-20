@@ -46,11 +46,21 @@ Template.get.events({
     getData('/grpc/testnet/GetStats')
     .then(data => displayData(data))
   },
+  'click #GetStats-get-Mainnet': () => {
+    getData('/grpc/mainnet/GetStats')
+    .then(data => displayData(data))
+  },
 })
 
 Template.post.events({
   'click #GetStats-Testnet': () => {
     postData('/grpc/testnet/GetStats',
+      JSON.parse($('#GetStats').val())
+    )
+    .then(data => displayData(data))
+  },
+  'click #GetStats-Mainnet': () => {
+    postData('/grpc/mainnet/GetStats',
       JSON.parse($('#GetStats').val())
     )
     .then(data => displayData(data))
