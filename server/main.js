@@ -10,13 +10,13 @@ const mainnet = new QrlNode(ip_mainnet, port)
 Meteor.startup(() => {
 
   // Enable cross origin requests for all endpoints
-  JsonRoutes.setResponseHeaders({
+  const headers = {
     'Cache-Control': 'no-store',
     Pragma: 'no-cache',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-  });
+  }
 
   // TESTNET
   testnet.connect().then(() => {
@@ -28,6 +28,7 @@ Meteor.startup(() => {
       testnet.api(id).then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
+          headers
         })  
       })        
     })
@@ -62,10 +63,12 @@ Meteor.startup(() => {
       testnet.api(id, options).then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
+          headers
         })  
       }).catch(error => {
         JsonRoutes.sendResult(res, {
           data: error,
+          headers
         })
       })
 
@@ -82,6 +85,7 @@ mainnet.connect().then(() => {
     mainnet.api(id).then((result) => {
       JsonRoutes.sendResult(res, {
         data: result,
+        headers
       })  
     })        
   })
@@ -117,10 +121,12 @@ mainnet.connect().then(() => {
     mainnet.api(id, options).then((result) => {
       JsonRoutes.sendResult(res, {
         data: result,
+        headers
       })  
     }).catch(error => {
       JsonRoutes.sendResult(res, {
         data: error,
+        headers
       })
     })
 
