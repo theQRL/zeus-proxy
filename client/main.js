@@ -43,32 +43,32 @@ function displayData(data) {
 
 Template.get.events({
   'click #GetStats-get-Testnet': () => {
-    getData('/grpc/GetStats')
+    getData('/grpc/testnet/GetStats')
     .then(data => displayData(data))
   },
 })
 
 Template.post.events({
   'click #GetStats-Testnet': () => {
-    postData('/grpc/GetStats',
+    postData('/grpc/testnet/GetStats',
       JSON.parse($('#GetStats').val())
     )
     .then(data => displayData(data))
   },
   'click #GetAddressState-Testnet': () => {
-    postData('/grpc/GetAddressState',
+    postData('/grpc/testnet/GetAddressState',
       JSON.parse($('#GetAddressState').val())
     )
     .then(data => displayData(data))
   },
   'click #GetOptimizedAddressState-Testnet': () => {
-    postData('/grpc/GetOptimizedAddressState', 
+    postData('/grpc/testnet/GetOptimizedAddressState', 
       JSON.parse($('#GetOptimizedAddressState').val())
     )
     .then(data => displayData(data))
   },
   'click #GetObject-Testnet': () => {
-    postData('/grpc/GetObject', 
+    postData('/grpc/testnet/GetObject', 
       JSON.parse($('#GetObject').val())
     )
     .then(data => displayData(data))
