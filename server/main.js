@@ -6,11 +6,21 @@ const port = '19009'
 const testnet = new QrlNode(ip, port)
 
 Meteor.startup(() => {
+
+  // Enable cross origin requests for all endpoints
+  JsonRoutes.setResponseHeaders({
+    'Cache-Control': 'no-store',
+    Pragma: 'no-cache',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  });
+
   testnet.connect().then(() => {
     console.log('Connected to Testnet')
 
     // Routes - get
-    JsonRoutes.add("get", "/grpc/:request", function (req, res, next) {
+    JsonRoutes.add("get", "/grpc/testnet/:request", function (req, res, next) {
       const id = req.params.request
       testnet.api(id).then((result) => {
         JsonRoutes.sendResult(res, {
@@ -20,7 +30,7 @@ Meteor.startup(() => {
     })
 
     // Routes - post
-    JsonRoutes.add("post", "/grpc/:request", function (req, res, next) {
+    JsonRoutes.add("post", "/grpc/testnet/:request", function (req, res, next) {
       const id = req.params.request
       const options = req.body
       
