@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor'
-import QrlNode from '@theqrl/node-helpers'
+import QrlNode from './qrlNode'
 
 const ip = 'testnet-1.automated.theqrl.org'
-const ip_mainnet = 'mainnet-1.automated.theqrl.org'
+const ip_mainnet = 'mainnet-7.automated.theqrl.org'
 const port = '19009'
 const testnet = new QrlNode(ip, port)
 const mainnet = new QrlNode(ip_mainnet, port)
