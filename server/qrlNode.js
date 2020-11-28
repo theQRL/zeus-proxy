@@ -10,13 +10,13 @@ const util = require('util')
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
-const PROTO_PATH = Assets.absoluteFilePath("qrlbase.proto").split(
-  "qrlbase.proto"
+const PROTO_PATH = Assets.absoluteFilePath('qrlbase.proto').split(
+  'qrlbase.proto'
 )[0]
 
 let qrlClient = null
 
-function clientGetNodeInfo (client) {
+function clientGetNodeInfo(client) {
   try {
     return new Promise((resolve, reject) => {
       client.getNodeInfo({}, (error, response) => {
@@ -32,12 +32,16 @@ function clientGetNodeInfo (client) {
 }
 
 function checkProtoHash(file) {
-  return readFile(file).then(contents => {
+  return readFile(file).then((contents) => {
     // console.log(contents)
-    const protoFileWordArray = CryptoJS.lib.WordArray.create(contents.toString())
-    const calculatedProtoHash = CryptoJS.SHA256(protoFileWordArray).toString(CryptoJS.enc.Hex)
+    const protoFileWordArray = CryptoJS.lib.WordArray.create(
+      contents.toString()
+    )
+    const calculatedProtoHash = CryptoJS.SHA256(protoFileWordArray).toString(
+      CryptoJS.enc.Hex
+    )
     let verified = false
-    QRLPROTO_SHA256.forEach(value => {
+    QRLPROTO_SHA256.forEach((value) => {
       if (value.protoHash) {
         if (value.protoHash === calculatedProtoHash) {
           verified = true
@@ -49,23 +53,30 @@ function checkProtoHash(file) {
 }
 
 function loadGrpcBaseProto(grpcEndpoint) {
-    return protoLoader.load(`${PROTO_PATH}qrlbase.proto`, {}).then(async packageDefinition => {
+  return protoLoader
+    .load(`${PROTO_PATH}qrlbase.proto`, {})
+    .then(async (packageDefinition) => {
       try {
-        const packageObject = await grpc.loadPackageDefinition(packageDefinition)
-        const client = await new packageObject.qrl.Base(grpcEndpoint, grpc.credentials.createInsecure())
+        const packageObject = await grpc.loadPackageDefinition(
+          packageDefinition
+        )
+        const client = await new packageObject.qrl.Base(
+          grpcEndpoint,
+          grpc.credentials.createInsecure()
+        )
         // console.log(client)
         const res = await clientGetNodeInfo(client)
         const qrlProtoFilePath = tmp.fileSync({
           mode: '0644',
           prefix: 'qrl-',
-          postfix: '.proto'
+          postfix: '.proto',
         }).name
-        writeFile(qrlProtoFilePath, res.grpcProto).then(fsErr => {
+        writeFile(qrlProtoFilePath, res.grpcProto).then((fsErr) => {
           if (fsErr) {
             console.log('tmp filesystem error')
           }
         })
-        return(qrlProtoFilePath)
+        return qrlProtoFilePath
       } catch (error) {
         console.log('Unable to load grpc base proto (' + error + ')')
       }
@@ -73,34 +84,36 @@ function loadGrpcBaseProto(grpcEndpoint) {
 }
 
 async function loadGrpcProto(protofile, endpoint) {
-    const options = {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true,
-      includeDirs: [PROTO_PATH],
-    }
-    const packageDefinition = await protoLoader.load(protofile, options)
-    const grpcObject = grpc.loadPackageDefinition(packageDefinition)
-    const grpcObjectString = JSON.stringify(grpcObject.qrl)
-    const protoObjectWordArray = CryptoJS.lib.WordArray.create(grpcObjectString)
-    const calculatedObjectHash = CryptoJS.SHA256(protoObjectWordArray).toString(CryptoJS.enc.Hex)
-    let verified = false
-    QRLPROTO_SHA256.forEach(value => {
-      if (value.objectHash) {
-        if (value.objectHash === calculatedObjectHash) {
-          verified = true
-        }
+  const options = {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true,
+    includeDirs: [PROTO_PATH],
+  }
+  const packageDefinition = await protoLoader.load(protofile, options)
+  const grpcObject = grpc.loadPackageDefinition(packageDefinition)
+  const grpcObjectString = JSON.stringify(grpcObject.qrl)
+  const protoObjectWordArray = CryptoJS.lib.WordArray.create(grpcObjectString)
+  const calculatedObjectHash = CryptoJS.SHA256(protoObjectWordArray).toString(
+    CryptoJS.enc.Hex
+  )
+  let verified = false
+  QRLPROTO_SHA256.forEach((value) => {
+    if (value.objectHash) {
+      if (value.objectHash === calculatedObjectHash) {
+        verified = true
       }
-    })
-    // If the grpc object shasum matches, establish the grpc connection.
-    if (verified) {
-      return new grpcObject.qrl.PublicAPI(
-        endpoint,
-        grpc.credentials.createInsecure()
-      )
     }
+  })
+  // If the grpc object shasum matches, establish the grpc connection.
+  if (verified) {
+    return new grpcObject.qrl.PublicAPI(
+      endpoint,
+      grpc.credentials.createInsecure()
+    )
+  }
 }
 
 async function makeClient(grpcEndpoint) {
