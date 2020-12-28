@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import QrlNode from './qrlNode'
 
 const ipTestnet = 'testnet-1.automated.theqrl.org'
-const ipMainnet = '95.179.131.134'
+const ipMainnet = 'mainnet-1.automated.theqrl.org'
 const port = '19009'
 const testnet = new QrlNode(ipTestnet, port)
 const mainnet = new QrlNode(ipMainnet, port)
@@ -35,24 +35,14 @@ Meteor.startup(() => {
     Pragma: 'no-cache',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers':
-      'Content-Type, Authorization, X-Requested-With',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
   }
 
   JsonRoutes.Middleware.use(function (req, res, next) {
     const originalUrl = req.originalUrl
     const apiCall = req.originalUrl.split('/')
-    if (
-      apiCall[2] !== 'mainnet' &&
-      apiCall[2] !== 'testnet' &&
-      originalUrl !== '/'
-    ) {
-      console.log(
-        'ERROR: [invalid route] ' +
-          req.connection.remoteAddress +
-          ' -> ' +
-          originalUrl
-      )
+    if (apiCall[2] !== 'mainnet' && apiCall[2] !== 'testnet' && originalUrl !== '/') {
+      console.log('ERROR: [invalid route] ' + req.connection.remoteAddress + ' -> ' + originalUrl)
       JsonRoutes.sendResult(res, {
         code: 401,
         data: {
@@ -73,12 +63,30 @@ Meteor.startup(() => {
     // Routes - get
     JsonRoutes.add('get', '/grpc/testnet/:request', function (req, res, next) {
       const id = req.params.request
-      mainnet.api(id).then((result) => {
+      console.log(req.connection.remoteAddress + ' -> GET [Grpc/Testnet] ' + id)
+      testnet.api(id).then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
           headers,
         })
       })
+    })
+    JsonRoutes.add('get', '/util/testnet/unconfirmedTxCount', function (req, res, next) {
+      console.log(req.connection.remoteAddress + ' -> [Util/Testnet] unconfirmedTxCount')
+      testnet
+        .api('getLatestData', {
+          filter: 'TRANSACTIONS_UNCONFIRMED',
+          offset: 0,
+          quantity: 50,
+        })
+        .then((result) => {
+          console.table(result)
+          const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
+          JsonRoutes.sendResult(res, {
+            data: unconfirmedTxCount,
+            headers,
+          })
+        })
     })
     // Routes - post
     JsonRoutes.add('post', '/grpc/testnet/:request', function (req, res, next) {
@@ -99,7 +107,7 @@ Meteor.startup(() => {
           }
         }
       }
-      console.log(req.connection.remoteAddress + ' -> [GRPC/Testnet] ' + id)
+      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Testnet] ' + id)
       testnet
         .api(id, options)
         .then((result) => {
@@ -125,12 +133,30 @@ Meteor.startup(() => {
     // Routes - get
     JsonRoutes.add('get', '/grpc/mainnet/:request', function (req, res, next) {
       const id = req.params.request
+      console.log(req.connection.remoteAddress + ' -> GET [Grpc/Mainnet] ' + id)
       mainnet.api(id).then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
           headers,
         })
       })
+    })
+    JsonRoutes.add('get', '/util/mainnet/unconfirmedTxCount', function (req, res, next) {
+      console.log(req.connection.remoteAddress + ' -> [Util/Mainnet] unconfirmedTxCount')
+      mainnet
+        .api('getLatestData', {
+          filter: 'TRANSACTIONS_UNCONFIRMED',
+          offset: 0,
+          quantity: 50,
+        })
+        .then((result) => {
+          console.table(result)
+          const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
+          JsonRoutes.sendResult(res, {
+            data: unconfirmedTxCount,
+            headers,
+          })
+        })
     })
     // Routes - post
     JsonRoutes.add('post', '/grpc/mainnet/:request', function (req, res, next) {
@@ -151,7 +177,7 @@ Meteor.startup(() => {
           }
         }
       }
-      console.log(req.connection.remoteAddress + ' -> [GRPC/Mainnet] ' + id)
+      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Mainnet] ' + id)
       mainnet
         .api(id, options)
         .then((result) => {
