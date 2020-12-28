@@ -80,7 +80,6 @@ Meteor.startup(() => {
           quantity: 50,
         })
         .then((result) => {
-          console.table(result)
           const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
           JsonRoutes.sendResult(res, {
             data: unconfirmedTxCount,
@@ -150,7 +149,6 @@ Meteor.startup(() => {
           quantity: 50,
         })
         .then((result) => {
-          console.table(result)
           const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
           JsonRoutes.sendResult(res, {
             data: unconfirmedTxCount,
