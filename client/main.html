@@ -102,6 +102,9 @@
       <div class="level-item">
         <code>/grpc/${network}/GetAddressState</code>
       </div>
+      <div class="level-right">
+        <small>Depreciated - not recommended for use</small>
+      </div>
     </div>
     </div>
     <textarea id="GetAddressState" class="textarea" placeholder="{ address: String }">{ "address": "Q0103003a218992254da652d64e3617f5ed2cf6417bf464e2a02d0a214e0050657f46f9f6796f73" }</textarea>
@@ -165,6 +168,29 @@
     </div>
     <p><strong>Sends:</strong> String Query (block id, txhash or QRL address)</p>
     <p><strong>Returns:</strong> Located data</p>
+    <p>&nbsp;</p><p>&nbsp;</p>
+        <div class="level">
+      <div class="level-left"><div class="level-item"><p class="title is-5">GetTokensByAddress</p></div>
+      <div class="level-item">
+        <code>/grpc/${network}/GetTokensByAddress</code>
+      </div>
+    </div>
+    </div>
+    <textarea id="GetTokensByAddress" class="textarea" placeholder="{ address: String, item_per_page: Integer, page_number: Integer }">{ "address": "Q010900411c50a98e65d289b51d9d4dc0f61833c26f2c6c4f3ce4df8e9968d1fcae6f6341392bea", "item_per_page": 100, "page_number": 1 }</textarea>
+    <div class="level is-mobile">
+      <div class="level-left">
+        <div class="level-item">
+          <button id="GetTokensByAddress-Testnet" class="button is-small is-primary is-light level-item">
+            Testnet
+          </button>
+          <button id="GetTokensByAddress-Mainnet" class="button is-small is-primary is-light level-item">
+            Mainnet
+          </button>
+        </div>
+      </div>
+    </div>
+    <p><strong>Sends:</strong> String QRL address, Integer items per page to return, Integer page number</p>
+    <p><strong>Returns:</strong> Token holdings information</p>
     <p>&nbsp;</p><p>&nbsp;</p>
   </div>
 </template>
