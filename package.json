@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.3",
-    "@theqrl/node-helpers": "^0.6.0",
-    "@theqrl/qrl-proto-sha256": "^3.1.0",
+    "@theqrl/node-helpers": "^0.6.1",
+    "@theqrl/qrl-proto-sha256": "^3.4.0",
     "@theqrl/qrlbase.proto": "^1.0.0",
     "google-proto-files": "^2.3.0",
     "jquery": "^3.4.1",
