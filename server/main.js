@@ -1,11 +1,12 @@
 import { Meteor } from 'meteor/meteor'
 import QrlNode from './qrlNode'
 
-const ipTestnet = 'testnet-1.automated.theqrl.org'
+const ipTestnet = 'testnet-4.automated.theqrl.org'
 const ipMainnet = 'mainnet-1.automated.theqrl.org'
-const port = '19009'
-const testnet = new QrlNode(ipTestnet, port)
-const mainnet = new QrlNode(ipMainnet, port)
+const portMainnet = '19009'
+const portTestnet = '29009'
+const testnet = new QrlNode(ipTestnet, portTestnet)
+const mainnet = new QrlNode(ipMainnet, portMainnet)
 
 const checkConnectionStatus = () => {
   if (mainnet.connection === true) {
