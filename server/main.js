@@ -58,186 +58,216 @@ Meteor.startup(() => {
   })
 
   // TESTNET
-  testnet.connect().then(() => {
-    console.log('Connection attempt to Testnet')
-    console.log('Mainnet connection status: ' + testnet.connection)
-    // Routes - get
-    JsonRoutes.add('get', '/grpc/testnet/:request', function (req, res, next) {
-      const id = req.params.request
-      console.log(req.connection.remoteAddress + ' -> GET [Grpc/Testnet] ' + id)
-      testnet.api(id).then((result) => {
+  // Routes - get
+  JsonRoutes.add('get', '/grpc/testnet/:request', function (req, res, next) {
+    const id = req.params.request
+    console.log(req.connection.remoteAddress + ' -> GET [Grpc/Testnet] ' + id)
+    testnet
+      .api(id)
+      .then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
           headers,
         })
       })
-    })
-    JsonRoutes.add('get', '/util/testnet/unconfirmedTxCount', function (req, res, next) {
-      console.log(req.connection.remoteAddress + ' -> [Util/Testnet] unconfirmedTxCount')
-      testnet
-        .api('getLatestData', {
-          filter: 'TRANSACTIONS_UNCONFIRMED',
-          offset: 0,
-          quantity: 50,
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-        .then((result) => {
-          const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
-          JsonRoutes.sendResult(res, {
-            data: unconfirmedTxCount,
-            headers,
-          })
+      })
+  })
+  JsonRoutes.add('get', '/util/testnet/unconfirmedTxCount', function (req, res, next) {
+    console.log(req.connection.remoteAddress + ' -> [Util/Testnet] unconfirmedTxCount')
+    testnet
+      .api('getLatestData', {
+        filter: 'TRANSACTIONS_UNCONFIRMED',
+        offset: 0,
+        quantity: 50,
+      })
+      .then((result) => {
+        const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
+        JsonRoutes.sendResult(res, {
+          data: unconfirmedTxCount,
+          headers,
         })
-    })
-    // GetOTS route for testnet
-    JsonRoutes.add('post', '/grpc/testnet/GetOTS', function (req, res, next) {
-      const options = req.body
-      if (options.address) {
-        options.address = Buffer.from(options.address.substring(1), 'hex')
-      }
-      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Testnet] GetOTS')
-      testnet
-        .api('GetOTS', options)
-        .then((result) => {
-          JsonRoutes.sendResult(res, {
-            data: result,
-            headers,
-          })
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-        .catch((error) => {
-          JsonRoutes.sendResult(res, {
-            data: error,
-            headers,
-          })
+      })
+  })
+  // GetOTS route for testnet
+  JsonRoutes.add('post', '/grpc/testnet/GetOTS', function (req, res, next) {
+    const options = req.body
+    if (options.address) {
+      options.address = Buffer.from(options.address.substring(1), 'hex')
+    }
+    console.log(req.connection.remoteAddress + ' -> POST [Grpc/Testnet] GetOTS')
+    testnet
+      .api('GetOTS', options)
+      .then((result) => {
+        JsonRoutes.sendResult(res, {
+          data: result,
+          headers,
         })
-    })
-    // Routes - post
-    JsonRoutes.add('post', '/grpc/testnet/:request', function (req, res, next) {
-      const id = req.params.request
-      const options = req.body
-      if (options.address) {
-        options.address = Buffer.from(options.address.substring(1), 'hex')
-      }
-      if (parseInt(options.query, 10).toString() === options.query) {
-        // block query
-        options.query = Buffer.from(options.query)
-      } else {
-        if (options.query) {
-          if (options.query[0].toLowerCase() === 'q') {
-            options.query = Buffer.from(options.query.substring(1), 'hex')
-          } else {
-            options.query = Buffer.from(options.query, 'hex')
-          }
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
+        })
+      })
+  })
+  // Routes - post
+  JsonRoutes.add('post', '/grpc/testnet/:request', function (req, res, next) {
+    const id = req.params.request
+    const options = req.body
+    if (options.address) {
+      options.address = Buffer.from(options.address.substring(1), 'hex')
+    }
+    if (parseInt(options.query, 10).toString() === options.query) {
+      // block query
+      options.query = Buffer.from(options.query)
+    } else {
+      if (options.query) {
+        if (options.query[0].toLowerCase() === 'q') {
+          options.query = Buffer.from(options.query.substring(1), 'hex')
+        } else {
+          options.query = Buffer.from(options.query, 'hex')
         }
       }
-      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Testnet] ' + id)
-      testnet
-        .api(id, options)
-        .then((result) => {
-          JsonRoutes.sendResult(res, {
-            data: result,
-            headers,
-          })
+    }
+    console.log(req.connection.remoteAddress + ' -> POST [Grpc/Testnet] ' + id)
+    testnet
+      .api(id, options)
+      .then((result) => {
+        JsonRoutes.sendResult(res, {
+          data: result,
+          headers,
         })
-        .catch((error) => {
-          JsonRoutes.sendResult(res, {
-            data: error,
-            headers,
-          })
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-    })
+      })
   })
   // end TESTNET
 
   // MAINNET
-  mainnet.connect().then(() => {
-    console.log('Connection attempt to Mainnet')
-    console.log('Mainnet connection status: ' + mainnet.connection)
-    // Routes - get
-    JsonRoutes.add('get', '/grpc/mainnet/:request', function (req, res, next) {
-      const id = req.params.request
-      console.log(req.connection.remoteAddress + ' -> GET [Grpc/Mainnet] ' + id)
-      mainnet.api(id).then((result) => {
+  // Routes - get
+  JsonRoutes.add('get', '/grpc/mainnet/:request', function (req, res, next) {
+    const id = req.params.request
+    console.log(req.connection.remoteAddress + ' -> GET [Grpc/Mainnet] ' + id)
+    mainnet
+      .api(id)
+      .then((result) => {
         JsonRoutes.sendResult(res, {
           data: result,
           headers,
         })
       })
-    })
-    JsonRoutes.add('get', '/util/mainnet/unconfirmedTxCount', function (req, res, next) {
-      console.log(req.connection.remoteAddress + ' -> [Util/Mainnet] unconfirmedTxCount')
-      mainnet
-        .api('getLatestData', {
-          filter: 'TRANSACTIONS_UNCONFIRMED',
-          offset: 0,
-          quantity: 50,
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-        .then((result) => {
-          const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
-          JsonRoutes.sendResult(res, {
-            data: unconfirmedTxCount,
-            headers,
-          })
+      })
+  })
+  JsonRoutes.add('get', '/util/mainnet/unconfirmedTxCount', function (req, res, next) {
+    console.log(req.connection.remoteAddress + ' -> [Util/Mainnet] unconfirmedTxCount')
+    mainnet
+      .api('getLatestData', {
+        filter: 'TRANSACTIONS_UNCONFIRMED',
+        offset: 0,
+        quantity: 50,
+      })
+      .then((result) => {
+        const unconfirmedTxCount = { unconfirmedTransactionCount: result.transactions_unconfirmed.length }
+        JsonRoutes.sendResult(res, {
+          data: unconfirmedTxCount,
+          headers,
         })
-    })
-    // GetOTS route for mainnet
-    JsonRoutes.add('post', '/grpc/mainnet/GetOTS', function (req, res, next) {
-      const options = req.body
-      if (options.address) {
-        options.address = Buffer.from(options.address.substring(1), 'hex')
-      }
-      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Mainnet] GetOTS')
-      mainnet
-        .api('GetOTS', options)
-        .then((result) => {
-          JsonRoutes.sendResult(res, {
-            data: result,
-            headers,
-          })
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-        .catch((error) => {
-          JsonRoutes.sendResult(res, {
-            data: error,
-            headers,
-          })
+      })
+  })
+  // GetOTS route for mainnet
+  JsonRoutes.add('post', '/grpc/mainnet/GetOTS', function (req, res, next) {
+    const options = req.body
+    if (options.address) {
+      options.address = Buffer.from(options.address.substring(1), 'hex')
+    }
+    console.log(req.connection.remoteAddress + ' -> POST [Grpc/Mainnet] GetOTS')
+    mainnet
+      .api('GetOTS', options)
+      .then((result) => {
+        JsonRoutes.sendResult(res, {
+          data: result,
+          headers,
         })
-    })
-    // Routes - post
-    JsonRoutes.add('post', '/grpc/mainnet/:request', function (req, res, next) {
-      const id = req.params.request
-      const options = req.body
-      if (options.address) {
-        options.address = Buffer.from(options.address.substring(1), 'hex')
-      }
-      if (parseInt(options.query, 10).toString() === options.query) {
-        // block query
-        options.query = Buffer.from(options.query)
-      } else {
-        if (options.query) {
-          if (options.query[0].toLowerCase() === 'q') {
-            options.query = Buffer.from(options.query.substring(1), 'hex')
-          } else {
-            options.query = Buffer.from(options.query, 'hex')
-          }
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
+        })
+      })
+  })
+  // Routes - post
+  JsonRoutes.add('post', '/grpc/mainnet/:request', function (req, res, next) {
+    const id = req.params.request
+    const options = req.body
+    if (options.address) {
+      options.address = Buffer.from(options.address.substring(1), 'hex')
+    }
+    if (parseInt(options.query, 10).toString() === options.query) {
+      // block query
+      options.query = Buffer.from(options.query)
+    } else {
+      if (options.query) {
+        if (options.query[0].toLowerCase() === 'q') {
+          options.query = Buffer.from(options.query.substring(1), 'hex')
+        } else {
+          options.query = Buffer.from(options.query, 'hex')
         }
       }
-      console.log(req.connection.remoteAddress + ' -> POST [Grpc/Mainnet] ' + id)
-      mainnet
-        .api(id, options)
-        .then((result) => {
-          JsonRoutes.sendResult(res, {
-            data: result,
-            headers,
-          })
+    }
+    console.log(req.connection.remoteAddress + ' -> POST [Grpc/Mainnet] ' + id)
+    mainnet
+      .api(id, options)
+      .then((result) => {
+        JsonRoutes.sendResult(res, {
+          data: result,
+          headers,
         })
-        .catch((error) => {
-          JsonRoutes.sendResult(res, {
-            data: error,
-            headers,
-          })
+      })
+      .catch((error) => {
+        JsonRoutes.sendResult(res, {
+          data: error,
+          headers,
         })
-    })
+      })
   })
   // end MAINNET
+
+  testnet.connect()
+  mainnet.connect()
+
+  // Reconnects a node that is down, and pings a connected one so a dead connection is
+  // replaced even when no requests are coming in
+  Meteor.setInterval(() => {
+    testnet.healthCheck()
+    mainnet.healthCheck()
+  }, 30000)
 
   Meteor.setInterval(() => {
     checkConnectionStatus()
